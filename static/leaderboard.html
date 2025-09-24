@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contest Leaderboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+  <style>
+    body {
+      background-color: #f8f9fa;
+      padding-top: 20px;
+    }
+
+    .leaderboard {
+      margin-top: 50px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container leaderboard">
+    <h2 id="leaderboard-title" class="text-center">Contest</h2>
+    <h3 id="leaderboard-title" class="text-center">Leaderboard</h3>
+    <p class="py-3 text-center">Last updated: <span id="last-updated">Never</span></p>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Username</th>
+            <th>Score</th>
+            <th>Timestamp, ID</th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider" id="leaderboard-body">
+          <tr>
+            <td colspan="4">Loading...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const contestId = urlParams.get("contest_id") || "unspecified-contest";
+    const API_BASE_URL = "http://localhost:8000";
+
+    document.getElementById("leaderboard-title").textContent = contestId;
+    function fetchLeaderboard() {
+      axios.post(`${API_BASE_URL}/top-submissions-per-user`, { contest_id: contestId })
+        .then(function (response) {
+          const submissions = response.data;
+          const leaderboardBody = document.getElementById("leaderboard-body");
+
+          leaderboardBody.innerHTML = '';
+
+          submissions.forEach((submission, i) => {
+            const row = `
+                        <tr>
+                            <td>${i + 1}.</td>
+                            <td>${submission.display_name}</td>
+                            <td>${submission.score.toFixed(4)}</td>
+                            <td>${new Date(`${submission.timestamp}Z`).toLocaleString("hu-HU", { timeZone: "Europe/Budapest" })}, ${submission.id}</td>
+                        </tr>`;
+            leaderboardBody.innerHTML += row;
+          });
+          document.getElementById("last-updated").textContent = new Date().toLocaleString("hu-HU", { timeZone: "Europe/Budapest" });
+        })
+        .catch(function (error) {
+          console.error("Error fetching leaderboard:", error);
+        });
+    }
+
+    setInterval(fetchLeaderboard, 10_000);
+    fetchLeaderboard();
+  </script>
+</body>
+</html>

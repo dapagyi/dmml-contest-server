@@ -1,0 +1,8 @@
+.git
+.venv
+.vscode
+
+dmml_contest.sqlite
+app/config.py
+data
+static/*/*

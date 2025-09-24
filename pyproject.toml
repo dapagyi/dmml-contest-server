@@ -1,0 +1,69 @@
+[project]
+name = "dmml-contest-server"
+version = "0.1.0"
+description = "dmml-contest-server"
+readme = "README.md"
+authors = [{ name = "David Apagyi", email = "apagyi.david@gmail.com" }]
+requires-python = ">=3.13"
+dependencies = [
+    "advanced-alchemy>=1.6.3",
+    "aiosqlite>=0.21.0",
+    "litestar[standard]>=2.17.0",
+    "pandas>=2.3.2",
+    "pydantic>=2.11.9",
+    "scikit-learn>=1.7.2",
+    "sqlalchemy>=2.0.43",
+]
+
+[dependency-groups]
+dev = ["ipykernel>=6.30.1"]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+fix = true
+
+[tool.ruff.lint]
+select = [
+    # flake8-2020
+    "YTT",
+    # flake8-bandit
+    "S",
+    # flake8-bugbear
+    "B",
+    # flake8-builtins
+    "A",
+    # flake8-comprehensions
+    "C4",
+    # flake8-debugger
+    "T10",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+    # mccabe
+    "C90",
+    # pycodestyle
+    "E",
+    "W",
+    # pyflakes
+    "F",
+    # pygrep-hooks
+    "PGH",
+    # pyupgrade
+    "UP",
+    # ruff
+    "RUF",
+]
+ignore = [
+    # LineTooLong
+    "E501",
+    # DoNotAssignLambda
+    "E731",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
+
+[tool.ruff.format]
+preview = true
