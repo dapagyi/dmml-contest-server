@@ -62,6 +62,10 @@ class InitRequest(BaseModel):
     contest_id: str
 
 
+class ContestInfoRequest(BaseModel):
+    contest_id: str
+
+
 @dataclass
 class PredictionSubmitRequest:
     display_name: str

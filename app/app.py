@@ -21,6 +21,7 @@ from app.models import (
     Base,
     ContestInfo,
     ContestInfoDTO,
+    ContestInfoRequest,
     FetchSubmissionsRequest,
     InitInfo,
     InitRequest,
@@ -106,6 +107,12 @@ def evaluate_prediction(predictions: pd.DataFrame, contest: ContestInfo) -> floa
         return f1_score(solution_df.values, predictions.values)
     except Exception as exc:
         raise HTTPException(status_code=400, detail="Invalid prediction.") from exc
+
+
+@post("/contest-info", status_code=HTTP_200_OK)
+async def get_contest_info_endpoint(data: ContestInfoRequest, transaction: AsyncSession) -> ContestInfoDTO:
+    contest_info = await get_contest_info(data.contest_id, transaction)
+    return ContestInfoDTO.model_validate(contest_info)
 
 
 @post("/contest", status_code=HTTP_200_OK)
@@ -222,6 +229,7 @@ async def on_startup(app: Litestar) -> None:
 
 app = Litestar(
     route_handlers=[
+        get_contest_info_endpoint,
         get_init_info,
         submit_prediction,
         fetch_top_submissions,
