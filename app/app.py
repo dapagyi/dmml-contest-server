@@ -224,7 +224,12 @@ async def on_startup(app: Litestar) -> None:
             user = User(user_key=user_key, full_name=info["full_name"])
             await session.merge(user)
 
+        app.state.num_contests = len(CONTESTS)
+        app.state.num_users = len(USERS)
+
     app.logger.info("Initialization data loaded.")
+    app.logger.info(f"Number of contests: {app.state.num_contests}")
+    app.logger.info(f"Number of users: {app.state.num_users}")
 
 
 app = Litestar(

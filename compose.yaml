@@ -3,16 +3,14 @@ services:
     build: .
     container_name: dmml
     volumes:
-      - ./data:/data
+      - ./data:/app/data
       - ./app/config.py:/app/app/config.py
       - /etc/localtime:/etc/localtime
       - ./static:/app/static
-    # networks:
-    #   - caddy_network
-    ports:
-      - 8000:8000
+    networks:
+      - caddy_network
     restart: unless-stopped
 
-# networks:
-#   caddy_network:
-#     external: true
+networks:
+  caddy_network:
+    external: true
